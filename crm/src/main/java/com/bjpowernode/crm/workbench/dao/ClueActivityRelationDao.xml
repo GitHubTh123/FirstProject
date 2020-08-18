@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bjpowernode.crm.workbench.dao.ClueActivityRelationDao">
+    <insert id="insertcar">
+        insert into tbl_clue_activity_relation(
+        id,
+        activityId,
+        clueId
+        )
+        values
+        <foreach collection="list" item="c" separator=",">
+            (
+            #{c.id},
+            #{c.activityId},
+            #{c.clueId}
+            )
+        </foreach>
+    </insert>
+    <delete id="deletecar">
+        delete  from tbl_clue_activity_relation where id=#{id}
+    </delete>
+    <select id="getActivityId" resultType="string">
+select * from tbl_clue_activity_relation where clueId=#{clueId};
+    </select>
+    <delete id="deletecarByClueId">
+        delete from tbl_clue_activity_relation where clueId=#{clueId};
+    </delete>
+</mapper>

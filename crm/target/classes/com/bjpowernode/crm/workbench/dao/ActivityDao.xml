@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bjpowernode.crm.workbench.dao.ActivityDao">
+    <select id="allActivity" resultType="activity">
+        select
+        a.name,
+        u.name as owner,
+        a.startDate,
+        a.endDate,
+        a.id
+        from tbl_user u
+        join tbl_activity a
+        on a.owner=u.id
+        <where>
+            <if test="name!='' and name!=null">
+                a.name like "%" #{name} "%"
+            </if>
+            <if test="owner!='' and owner!=null">
+                and u.name like "%" #{owner} "%"
+            </if>
+            <if test="startDate!='' and startDate!=null">
+                and a.startDate &gt; #{startDate}
+            </if>
+            <if test="endDate!='' and
+             endDate!=null">
+                and a.endDate &lt; #{endDate}
+            </if>
+        </where>
+        order by a.createTime desc limit #{skipCount},#{pageSize}
+    </select>
+    <select id="total" resultType="int">
+        select count(*)
+        from tbl_user u
+        join tbl_activity a
+        on a.owner=u.id
+        <where>
+            <if test="name!='' and name!=null">
+                a.name like "%" #{name} "%"
+            </if>
+            <if test="owner!='' and owner!=null">
+                and u.name like "%" #{owner} "%"
+            </if>
+            <if test="startDate!='' and startDate!=null">
+                and a.startDate &gt; #{startDate}
+            </if>
+            <if test="endDate!='' and endDate!=null">
+                and a.endDate &lt; #{endDate}
+            </if>
+        </where>
+    </select>
+    <select id="allUser" resultType="user">
+        select * from tbl_user;
+    </select>
+    <insert id="insertActivity">
+        insert into tbl_activity
+        (
+                id,
+                owner,
+                name,
+                startDate,
+                endDate,
+                cost,
+                description,
+                createTime,
+                createBy
+
+        )
+        values (
+        #{id},
+        #{owner},
+        #{name},
+        #{startDate},
+        #{endDate},
+        #{cost},
+        #{description},
+        #{createTime},
+        #{createBy}
+        )
+    </insert>
+    <select id="toEdit" resultType="activity">
+        select * from tbl_activity where id=#{id};
+    </select>
+    <update id="update">
+        update tbl_activity set
+                owner=#{owner},
+                name=#{name},
+                startDate=#{startDate},
+                endDate=#{endDate},
+                cost=#{cost},
+                description=#{description},
+                editBy=#{editBy},
+                editTime=#{editTime}
+                where id =#{id}
+    </update>
+    <delete id="delete">
+        delete from tbl_activity where id in
+        <foreach collection="array" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+    <select id="downloadAdvice" resultType="activity">
+        select * from tbl_activity;
+    </select>
+    <select id="download" resultType="activity">
+        select * from tbl_activity where id in
+        <foreach collection="array" separator="," close=")" open="(" item="id">
+            #{id}
+        </foreach>
+    </select>
+    <insert id="addSome">
+        insert into tbl_activity(
+        id,
+        owner,
+        name,
+        startDate,
+        endDate,
+        cost,
+        description,
+        createTime,
+        createBy,
+        editTime,
+        editBy
+
+        )
+        values
+        <foreach collection="list" item="a" separator=",">
+            ( #{a.id},
+            #{a.owner},
+            #{a.name},
+            #{a.startDate},
+            #{a.endDate},
+            #{a.cost},
+            #{a.description},
+            #{a.createTime},
+            #{a.createBy},
+            #{a.editTime},
+            #{a.editBy})
+        </foreach>
+    </insert>
+    <select id="toDetail" resultType="activity">
+        select
+        a.name,
+        u.name as owner,
+        a.startDate,
+        a.endDate,
+        a.id,
+        a.startDate,
+        a.endDate,
+        a.createBy,
+        a.createTime,
+        a.editBy,
+        a.editTime,
+        a.cost,
+        a.description
+        from tbl_user u
+        join tbl_activity a
+        on a.owner=u.id
+        where a.id=#{id}
+    </select>
+<select id="relationActivityClue" resultType="activity">
+    select
+    a.name,
+    u.name as owner,
+    a.endDate,
+    a.startDate,
+    c.id as id
+    from tbl_user u
+    join tbl_activity a
+    on a.owner=u.id
+    join tbl_clue_activity_relation c
+    on c.activityId=a.id
+    where c.clueId=#{clueId}
+</select>
+    <select id="getActivityByName" resultType="activity">
+        select
+        a.id,
+        a.name,
+        a.startDate,
+        a.endDate,
+        u.name as owner
+        from tbl_user u
+        join tbl_activity a
+        on a.owner=u.id
+        where a.name like "%" #{name} "%"
+        and a.id not in(
+        select activityId from tbl_clue_activity_relation where clueId=#{clueId}
+        )
+    </select>
+    <select id="searchActivity" resultType="activity">
+        select
+        a.name,
+        a.id,
+        a.endDate,
+        a.startDate,
+        u.name as owner
+        from tbl_user u
+        join tbl_activity a
+        on u.id=a.owner
+        where a.name like "%" #{name} "%"
+    </select>
+</mapper>

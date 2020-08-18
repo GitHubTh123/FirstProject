@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bjpowernode.crm.workbench.dao.ContactsDao">
+        <select id="allContacts" resultType="contacts">
+                select
+                c.id,
+                u.name as owner,
+                cm.name as customerId,
+                c.source,
+                c.birth,
+                c.fullname
+                from tbl_user u
+                join tbl_contacts c
+                on c.owner =u.id
+                join tbl_customer cm
+                on cm.id=c.customerId
+        </select>
+
+<insert id="insertContacts">
+    insert into tbl_contacts(
+            id,
+            owner,
+            source,
+            customerId,
+            fullname,
+            appellation,
+            email,
+            mphone,
+            job,
+            createBy,
+            createTime,
+            description,
+            contactSummary,
+            nextContactTime,
+            address
+
+    )values (
+            #{id},
+            #{owner},
+            #{source},
+            #{customerId},
+            #{fullname},
+            #{appellation},
+            #{email},
+            #{mphone},
+            #{job},
+            #{createBy},
+            #{createTime},
+            #{description},
+            #{contactSummary},
+            #{nextContactTime},
+            #{address}
+            )
+</insert>
+        
+        
+        <select id="getByName" resultType="contacts">
+                select * from tbl_contacts where fullname like "%" #{name} "%";
+        </select>
+        <select id="getById" resultType="contacts">
+                select * from tbl_contacts where id =#{id};
+        </select>
+        <select id="allRealtion" resultType="activity">
+                select
+                a.name,
+                u.name as owner,
+                a.startDate,
+                a.endDate,
+                car.id as id
+                from tbl_activity a
+                join tbl_user u
+                on u.id =a.owner
+                join tbl_contacts_activity_relation car
+                on car.activityId =a.id
+                where car.contactsId=#{id}
+        </select>
+        <select id="searchActivity" resultType="activity">
+                select
+                a.name,
+                u.name as owner,
+                a.id,
+                a.startDate,
+                a.endDate
+                from tbl_activity a
+                join tbl_user u
+                on u.id = a.owner
+                where a.name like "%" #{name} "%" and a.id not in
+                (
+                select activityId from tbl_contacts_activity_relation where contactsId=#{contactsId}
+                )
+        </select>
+        <insert id="correlation">
+                insert into  tbl_contacts_activity_relation
+                (
+                id,
+                contactsId,
+                activityId
+
+
+                )values (
+                 #{id},
+                #{contactsId},
+                #{activityId}
+                )
+
+
+        </insert>
+        <delete id="del">
+                delete from tbl_contacts_activity_relation where id =#{id}
+        </delete>
+</mapper>

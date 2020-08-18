@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bjpowernode.crm.workbench.dao.ContactsRemarkDao">
+<insert id="insertContactsRemark">
+    insert tbl_contacts_remark
+    (
+    id,
+    noteContent,
+    createBy,
+    createTime,
+    editFlag,
+    contactsId
+    )values
+    <foreach collection="list" item="c" separator=",">
+
+       ( #{c.id},
+        #{c.noteContent},
+        #{c.createBy},
+        #{c.createTime},
+        #{c.editFlag},
+        #{c.contactsId})
+
+
+    </foreach>
+</insert>
+</mapper>

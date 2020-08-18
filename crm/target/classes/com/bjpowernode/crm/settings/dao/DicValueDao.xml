@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bjpowernode.crm.settings.dao.DicValueDao">
+    <select id="allValue" resultType="dicvalue">
+    select * from tbl_dic_value;
+</select>
+    <insert id="add">
+        insert into tbl_dic_value (
+        id,value,text,orderNo,typeCode
+        ) values(#{id},#{value},#{text},#{orderNo},#{typeCode})
+    </insert>
+    <update id="update">
+    update tbl_dic_value set value =#{value},text=#{text},orderNo=#{orderNo},typeCode=#{typeCode} where id=#{id}
+</update>
+    <delete id="del">
+        delete from tbl_dic_value where id in
+        <foreach collection="array" separator="," close=")" open="(" item="id">
+            #{id}
+        </foreach>
+    </delete>
+    <delete id="delSome">
+        delete from tbl_dic_value where typeCode in
+        <foreach collection="array" separator="," close=")" open="(" item="id">
+            #{id}
+        </foreach>
+    </delete>
+    <select id="byId" resultType="dicvalue">
+          select * from tbl_dic_value where id =#{id}
+    </select>
+    <select id="cache" resultType="dicvalue">
+        select * from  tbl_dic_value where typeCode=#{id} order by orderNo;
+    </select>
+</mapper>

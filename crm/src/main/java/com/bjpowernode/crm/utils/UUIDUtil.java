@@ -1,0 +1,22 @@
+package com.bjpowernode.crm.utils;
+
+import java.util.UUID;
+
+public class UUIDUtil {
+
+    public static String getUUID() {
+
+        return UUID.randomUUID().toString().replaceAll("-", "");
+
+    }
+
+}
+/*
+public class UUIDUtil{
+public static String grtUUID{
+
+return UUID.randomUUID().toString.replaceAll("-","")
+
+}
+}
+ */

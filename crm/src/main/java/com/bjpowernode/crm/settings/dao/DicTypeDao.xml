@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bjpowernode.crm.settings.dao.DicTypeDao">
+    <select id="allType" resultType="dictype">
+select * from tbl_dic_type;
+    </select>
+<select id="byId" resultType="dictype">
+    select * from tbl_dic_type where code =#{code};
+</select>
+    <update id="update">
+        update tbl_dic_type set name=#{name},description=#{description} where code =#{code}
+    </update>
+    <delete id="del">
+        delete  from tbl_dic_type where code in
+        <foreach collection="array" item="code" open="(" close=")" separator=",">
+            #{code}
+        </foreach>
+    </delete>
+    <insert id="add">
+        insert into tbl_dic_type (code,name,description) values(#{code},#{name},#{description})
+    </insert>
+</mapper>
